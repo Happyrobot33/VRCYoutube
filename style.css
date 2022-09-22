@@ -1,11 +1,11 @@
 html {
-  width: 400px;
-  height: 180px;
   color: white;
   background-color: black;
 }
 body {
   font-family: Helvetica, sans-serif;
+  width: 400px;
+  height: auto;
 }
 h1 {
   text-align: center;
