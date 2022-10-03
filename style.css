@@ -1,15 +1,19 @@
 html {
   color: white;
   background-color: black;
+  height: fit-content;
 }
+
 body {
   font-family: Helvetica, sans-serif;
   width: 400px;
-  height: auto;
+  height: fit-content;
 }
+
 h1 {
   text-align: center;
 }
+
 #convert {
   border-radius: 0px;
   border-color: white;
@@ -22,4 +26,14 @@ h1 {
 #convert:hover {
   background-color: white;
   color: black;
+}
+
+#notification {
+  text-align: center;
+  font-size: 30px;
+  color: green;
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
 }
