@@ -27,7 +27,7 @@ jobs:
           file: src/manifest.json
           field: version
           # Increment the two digits after the last dot by 0.01
-          value: ${{ steps.get_version.outputs.VERSION | replaceRegex('([0-9]+\\.[0-9]+\\.)[0-9]+', '$1' + (steps.get_version.outputs.VERSION | replaceRegex('[0-9]+\\.[0-9]+\\.([0-9]+)', '$1') | int + 1 | tostring)) }}
+          value: ${{ steps.get_version.outputs.VERSION + 0.01 }}
 
       - name: "web-ext build"
         id: web-ext-build
@@ -49,8 +49,7 @@ jobs:
       
       - name: "Generate release tag"
         id: tag
-        run: |
-          echo "::set-output name=release_tag::FirefoxBuild_$(date +"%Y.%m.%d_%H-%M")"
+        run: echo "::set-output name=release_tag::FirefoxBuild_$(date +"%Y.%m.%d_%H-%M")"
 
       - name: "Create Release"
         uses: softprops/action-gh-release@v1
