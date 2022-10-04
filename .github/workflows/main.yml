@@ -28,8 +28,8 @@ jobs:
           cmd: sign
           source: ${{ steps.web-ext-build.outputs.target }}
           channel: unlisted
-          #apiKey: ${{ secrets.AMO_SIGN_KEY }}
-          #apiSecret: ${{ secrets.AMO_SIGN_SECRET }}
+          apiKey: ${{ secrets.AMO_SIGN_KEY }}
+          apiSecret: ${{ secrets.AMO_SIGN_SECRET }}
           timeout: 900000
 
       - name: "Create Release"
