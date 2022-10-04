@@ -15,5 +15,10 @@
     "default_popup": "index.html",
     "default_title": "VRCYoutube",
     "default_icon": "icon.png"
+  },
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "VRCYoutube",
+    }
   }
 }
