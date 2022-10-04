@@ -1,10 +1,14 @@
 {
   "name": "Happyrobot33s Youtube Questifyier",
-  "version": "1.2",
+  "version": "1.21",
   "description": "A tool to convert youtube links to work on quest in VRC!",
   "manifest_version": 2,
   "author": "Happyrobot33",
-  "permissions": ["clipboardWrite", "activeTab", "storage"],
+  "permissions": [
+    "clipboardWrite",
+    "activeTab",
+    "storage"
+  ],
   "icons": {
     "16": "icon.png",
     "32": "icon.png",
