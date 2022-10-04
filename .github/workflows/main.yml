@@ -31,7 +31,8 @@ jobs:
           field: version
           # Increment the two digits after the last dot by 0.01
           #get the version from the previous step, then increment it by 0.01
-          value: ${{ steps.get_version.outputs.VERSION }} | awk -F. '{$NF+=0.01;} 1' | sed 's/ /./g'
+          #dont use awk
+          value: ${{ steps.get_version.outputs.VERSION }} + 0.01 | tonumber | tostring
 
       - name: "Show incremented manifest ver number"
         # Print the incremented manifest version number to the console.
