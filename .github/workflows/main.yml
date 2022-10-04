@@ -32,10 +32,12 @@ jobs:
           # Increment the two digits after the last dot by 0.01
           #get the version from the previous step, then increment it by 0.01
           value: ${{ steps.get_version.outputs.VERSION }} | awk -F. '{$NF+=0.01;} 1' | sed 's/ /./g'
-        
-        #print the new version to the console
-        run: |
-          echo "New Version: $(jq -r .version src/manifest.json)"
+
+      - name: "Commit changes"
+        # Commit the changes to the manifest.json file
+        uses: EndBug/add-and-commit@v4
+        with:
+          author_name: "GitHub Actions"
 
       - name: "web-ext build"
         id: web-ext-build
