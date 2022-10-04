@@ -27,7 +27,7 @@ jobs:
           file: src/manifest.json
           field: version
           # Increment the two digits after the last dot by 0.01
-          value: ${{ steps.get_version.outputs.VERSION + 0.01 }}
+          value: "${{ steps.get_version.outputs.VERSION + 0.01 }}"
 
       - name: "web-ext build"
         id: web-ext-build
