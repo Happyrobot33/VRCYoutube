@@ -8,11 +8,15 @@
     <h1>VRCYoutube</h1>
     <p1>Convert any youtube page into a URL that can be watched by quest users! Just have the youtube page you want to convert focused, and click this button. The converted URL will be automatically copied to your clipboard</p1>
     <br>
+    <br>
+    <p1>Resolvers (Green is reachable, Red is unreachable)</p1>
+    <div id="ResolverList">
+    </div>
     <label for="resolver">Current Resolver:</label>
     <select name="resolver" id="resolver">
       <option value="https://questify.ngrok.io/?url=">Questify</option>
       <option value="https://nextnex.com/?url=">Nextnex</option>
-      <option value="https://resolver.mackandelius.xyz/?url=">Mackandelius</option>
+      <option value="https://resolver.mackandelius.xyz/?url=">Resolver.xyz</option>
     </select>
     <button id="convert">Copy Compatible Link</button>
     <p1 id="notification">Success!</p1>

@@ -37,3 +37,14 @@ h1 {
   top: 0;
   left: 0;
 }
+
+#ResolverList {
+  width: 100%;
+  height: auto;
+  border-radius: 0px;
+  border-color: white;
+  color: yellow;
+  background-color: black;
+  display: flex;
+  flex-direction: column;
+}

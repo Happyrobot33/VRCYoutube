@@ -23,7 +23,43 @@ document.addEventListener('DOMContentLoaded', function () {
             document.getElementById("resolver").value = result.resolver;
         }
     });
+
+    //get all options from the dropdown
+    var dropdown = document.getElementById("resolver");
+    var options = dropdown.options;
+    var resolverListElements = []
+
+    //add a text element to the id "ResolverList" for each resolver in the resolvers array
+    for (var i = 0; i < options.length; i++) {
+        var resolverURL = options[i].value;
+        var resolverName = options[i].text;
+        var resolverElement = document.createElement("text");
+        resolverElement.innerText = resolverName;
+        resolverElement.url = resolverURL;
+        var element = document.getElementById("ResolverList").appendChild(resolverElement);
+        resolverListElements.push(element);
+    }
+
+    //add a callback every 5 seconds to check if the resolvers are up or down
+    checkResolvers(resolverListElements);
+    /*
+    setInterval(function () {
+        checkResolvers(resolverListElements);
+    }, 5000);
+    */
 });
+
+async function checkResolvers(resolverListElements) {
+    //loop through each element in resolverListElements and set it to green or red depending on if the resolver is up or down
+    for (var i = 0; i < resolverListElements.length; i++) {
+        var resolverElement = resolverListElements[i];
+        var resolverURL = resolverElement.url;
+        //remove the /?url= from the end of the url
+        //resolverURL = resolverURL + "https://www.youtube.com/watch?v=cOlTz0YDDOY";
+        //wait for the ping to finish before moving on to the next resolver
+        await pingServer(resolverURL, resolverElement);
+    }
+}
 
 function copyTextToClipboard(text) {
     //Create a textbox field where we can insert text to. 
@@ -65,4 +101,24 @@ function copyTextToClipboard(text) {
         //remove the style attribute
         notification.removeAttribute("style");
     }, 3000);
+}
+
+//ping a server and return if it is up or down
+async function pingServer(url, resolverElement) {
+    return new Promise(function (resolve, reject) {
+        console.log("pinging " + url);
+        fetch(url, { 'mode': 'no-cors', 'cache': 'no-cache' }).then(function (response) {
+            if(response.status == 0){
+                resolverElement.style.color = "green";
+            } else {
+                resolverElement.style.color = "red";
+            }
+            console.log("done pinging " + url + " with status " + response.status);
+            resolve();
+        }).catch(function (error) {
+            resolverElement.style.color = "red";
+            console.log("done pinging " + url + " with error " + error);
+            resolve();
+        });
+    });
 }
