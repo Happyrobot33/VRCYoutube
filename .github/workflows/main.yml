@@ -21,23 +21,24 @@ jobs:
         run: |
           echo ::set-output name=version::$(jq -r .version src/manifest.json)
           echo "Version: $(jq -r .version src/manifest.json)"
+      
+      - name: "Generate Ver Number"
+        id: generate_ver_number
+        #generate a version number using the version from src/manifest.json
+        #add 0.01 to the version number for the next release
+        #print the version number to the console
+        run: |
+          echo ::set-output name=ver_number::$(echo $(jq -r .version src/manifest.json) + 0.01 | bc)
+          echo "Version Number: $(echo $(jq -r .version src/manifest.json) + 0.01 | bc)"
 
-      - name: "Increment manifest ver number"
+      - name: "Update manifest ver number"
         # Increment manifest version number in src/manifest.json.
         # Increment the two digits after the last dot.
         uses: jossef/action-set-json-field@v2
         with:
           file: src/manifest.json
           field: version
-          # Increment the two digits after the last dot by 0.01
-          #get the version from the previous step, then increment it by 0.01
-          #dont use awk
-          value: ${{ steps.get_version.outputs.VERSION | toFloat | add(0.01) | toFixed(2) }}
-
-      - name: "Show incremented manifest ver number"
-        # Print the incremented manifest version number to the console.
-        run: |
-          echo "Version: $(jq -r .version src/manifest.json)"
+          value: ${{ steps.generate_ver_number.outputs.ver_number }}
 
       - name: "Commit changes"
         # Commit the changes to the manifest.json file
