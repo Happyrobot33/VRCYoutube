@@ -17,7 +17,10 @@ jobs:
       - name: "Get Version"
         id: get_version
         #read the version from src/manifest.json using fromJSON
-        run: echo ::set-output name=VERSION::$(jq -r .version src/manifest.json)
+        #print the version to the console
+        run: |
+          echo ::set-output name=version::$(jq -r .version src/manifest.json)
+          echo "Version: $(jq -r .version src/manifest.json)"
 
       - name: "Increment manifest ver number"
         # Increment manifest version number in src/manifest.json.
