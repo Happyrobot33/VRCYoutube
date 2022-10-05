@@ -17,7 +17,7 @@ document.getElementById("resolver").addEventListener("change", function () {
 });
 
 //check for when index.html is visible, and then load the resolver from sync storage
-document.addEventListener('DOMContentLoaded', function () {
+document.addEventListener('DOMContentLoaded', async function () {
     chrome.storage.sync.get(['resolver'], function (result) {
         if (result.resolver) {
             document.getElementById("resolver").value = result.resolver;
@@ -37,27 +37,29 @@ document.addEventListener('DOMContentLoaded', function () {
         resolverElement.innerText = resolverName;
         resolverElement.url = resolverURL;
         var element = document.getElementById("ResolverList").appendChild(resolverElement);
+        //append a loading spinner to the end of the resolver element from spinner.html
+        //var tempChild = document.createElement("div");
+        //element.appendChild(tempChild);
+        element.innerHTML = element.innerHTML + await fetchHtmlAsText(chrome.runtime.getURL("spinner.html"));
+
         resolverListElements.push(element);
     }
 
-    //add a callback every 5 seconds to check if the resolvers are up or down
+    //check if each resolver is up or down
     checkResolvers(resolverListElements);
-    /*
-    setInterval(function () {
-        checkResolvers(resolverListElements);
-    }, 5000);
-    */
 });
+
+async function fetchHtmlAsText(url) {
+    return await (await fetch(url)).text();
+}
 
 async function checkResolvers(resolverListElements) {
     //loop through each element in resolverListElements and set it to green or red depending on if the resolver is up or down
     for (var i = 0; i < resolverListElements.length; i++) {
         var resolverElement = resolverListElements[i];
         var resolverURL = resolverElement.url;
-        //remove the /?url= from the end of the url
-        //resolverURL = resolverURL + "https://www.youtube.com/watch?v=cOlTz0YDDOY";
         //wait for the ping to finish before moving on to the next resolver
-        await pingServer(resolverURL, resolverElement);
+        pingServer(resolverURL, resolverElement);
     }
 }
 
@@ -104,21 +106,41 @@ function copyTextToClipboard(text) {
 }
 
 //ping a server and return if it is up or down
-async function pingServer(url, resolverElement) {
-    return new Promise(function (resolve, reject) {
-        console.log("pinging " + url);
-        fetch(url, { 'mode': 'no-cors', 'cache': 'no-cache' }).then(function (response) {
-            if(response.status == 0){
-                resolverElement.style.color = "green";
-            } else {
-                resolverElement.style.color = "red";
-            }
-            console.log("done pinging " + url + " with status " + response.status);
-            resolve();
-        }).catch(function (error) {
-            resolverElement.style.color = "red";
-            console.log("done pinging " + url + " with error " + error);
-            resolve();
-        });
+function pingServer(url, resolverElement) {
+    var cors_proxy_url = "https://api.allorigins.win/raw?rand=" + Math.random() + "&url=";
+    //random youtube video to make sure the resolvers are redirecting properly
+    var random_youtube_url = "https://www.youtube.com/watch?v=jNQXAC9IVRw";
+
+    console.log("pinging " + url);
+    console.log("cors proxy url: " + cors_proxy_url + url + random_youtube_url);
+
+    fetch(cors_proxy_url + url + random_youtube_url, { 'mode': 'cors', 'cache': 'no-store' }).then(function (response) {
+        if (response.ok) {
+            //check if response contains json, it will error if it doesn't
+            response.json().then(function (data) {
+                //if the response contains json, then the resolver is down
+                ResolverDown();
+            }).catch(function (error) {
+                //if the response doesnt contain json, then the resolver is up
+                ResolverUp();
+            });
+        } else {
+            //if the response is not ok, then the resolver is down
+            ResolverDown();
+        }
     });
+
+    function ResolverUp() {
+        console.log("resolver " + url + " is up");
+        resolverElement.style.color = "green";
+        //remove the loading spinner
+        resolverElement.innerHTML = resolverElement.innerText;
+    }
+
+    function ResolverDown() {
+        console.log("resolver " + url + " is down");
+        resolverElement.style.color = "red";
+        //remove the loading spinner
+        resolverElement.innerHTML = resolverElement.innerText;
+    }
 }
