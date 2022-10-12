@@ -45,9 +45,28 @@ document.addEventListener('DOMContentLoaded', async function () {
         resolverListElements.push(element);
     }
 
+    //check for updates
+    checkForUpdates();
+
     //check if each resolver is up or down
     checkResolvers(resolverListElements);
 });
+
+function checkForUpdates() {
+    //check if the current version is the same as the latest version
+    fetch('https://raw.githubusercontent.com/Happyrobot33/VRCYoutube/main/src/manifest.json')
+        .then(response => response.json())
+        .then(data => {
+            //get the current manifest
+            console.log("Current version is: " + chrome.runtime.getManifest().version);
+            console.log("Latest version is: " + data.version);
+            if (chrome.runtime.getManifest().version != data.version) {
+                //if the current version is not the same as the latest version, show the update button
+                document.getElementById("update").style.display = "block";
+                console.log("Update available!");
+            }
+        });
+}
 
 async function fetchHtmlAsText(url) {
     return await (await fetch(url)).text();

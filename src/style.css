@@ -12,6 +12,7 @@ body {
 
 h1 {
   text-align: center;
+  margin-bottom: 0%;
 }
 
 #convert {
@@ -47,4 +48,14 @@ h1 {
   background-color: black;
   display: flex;
   flex-direction: column;
+}
+
+#update {
+  width: 100%;
+  font-size: large;
+  padding: 0px 0px;
+  color: green;
+  background-color: black;
+  text-align: center;
+  display: none;
 }
