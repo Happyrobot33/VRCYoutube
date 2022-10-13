@@ -108,5 +108,5 @@ jobs:
         with:
           tag_name: ${{ steps.tag.outputs.release_tag }}
           files: |
-            Chrome ${{ steps.get_version.outputs.version }}.crx
-            Firefox ${{ steps.get_version.outputs.version }}.xpi
+            Chrome ${{ steps.generate_ver_number.outputs.ver_number }}.crx
+            Firefox ${{ steps.generate_ver_number.outputs.ver_number }}.xpi
