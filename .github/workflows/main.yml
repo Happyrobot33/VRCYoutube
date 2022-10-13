@@ -46,25 +46,6 @@ jobs:
         with:
           author_name: "GitHub Actions"
 
-      #FIREFOX BUILDING
-      - name: "web-ext build"
-        id: web-ext-build
-        uses: kewisch/action-web-ext@v1
-        with:
-          cmd: build
-          source: src
-
-      - name: "web-ext sign"
-        id: web-ext-sign
-        uses: kewisch/action-web-ext@v1
-        with:
-          cmd: sign
-          source: ${{ steps.web-ext-build.outputs.target }}
-          channel: unlisted
-          apiKey: ${{ secrets.AMO_SIGN_KEY }}
-          apiSecret: ${{ secrets.AMO_SIGN_SECRET }}
-          timeout: 900000
-      
         #CHROME BUILDING
         # pack zip and read manifest, can be reused in the following steps
       - name: "ZIP Extension"
@@ -83,8 +64,27 @@ jobs:
           crxFilePath: 'build/extension.crx'
           privateKey: ${{ secrets.CHROME_CRX_PRIVATE_KEY }}
           # The following is optional if you need update.xml file
-          updateXmlPath: 'build/update.xml'
-          updateXmlCodebaseUrl: 'https://server.com/extension.crx'
+          #updateXmlPath: 'build/update.xml'
+          #updateXmlCodebaseUrl: 'https://server.com/extension.crx'
+
+      #FIREFOX BUILDING
+      - name: "web-ext build"
+        id: web-ext-build
+        uses: kewisch/action-web-ext@v1
+        with:
+          cmd: build
+          source: src
+
+      - name: "web-ext sign"
+        id: web-ext-sign
+        uses: kewisch/action-web-ext@v1
+        with:
+          cmd: sign
+          source: ${{ steps.web-ext-build.outputs.target }}
+          channel: unlisted
+          apiKey: ${{ secrets.AMO_SIGN_KEY }}
+          apiSecret: ${{ secrets.AMO_SIGN_SECRET }}
+          timeout: 900000
       
       - name: "Generate release tag"
         id: tag
