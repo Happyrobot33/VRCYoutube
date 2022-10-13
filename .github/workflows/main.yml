@@ -45,7 +45,7 @@ jobs:
         uses: EndBug/add-and-commit@v4
         with:
           author_name: "GitHub Actions"
-          message: 'Version Bump ($(echo $(jq -r .version src/manifest.json) | bc)" => ${{ steps.generate_ver_number.outputs.ver_number }})'
+          message: 'Version Bump (${{ steps.get_version.outputs.version }} => ${{ steps.generate_ver_number.outputs.ver_number }})'
 
         #CHROME BUILDING
         # pack zip and read manifest, can be reused in the following steps
