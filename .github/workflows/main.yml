@@ -46,6 +46,7 @@ jobs:
         with:
           author_name: "GitHub Actions"
 
+      #FIREFOX BUILDING
       - name: "web-ext build"
         id: web-ext-build
         uses: kewisch/action-web-ext@v1
@@ -64,9 +65,30 @@ jobs:
           apiSecret: ${{ secrets.AMO_SIGN_SECRET }}
           timeout: 900000
       
+        #CHROME BUILDING
+        # pack zip and read manifest, can be reused in the following steps
+      - name: "ZIP Extension"
+        id: packExtensionDir
+        uses: cardinalby/webext-buildtools-pack-extension-dir-action@v1
+        with:
+          extensionDir: 'src'
+          zipFilePath: 'build/extension.zip'
+
+      - name: "Pack Extension for Chrome"
+        id: PackExtension
+        uses: cardinalby/webext-buildtools-chrome-crx-action@v2
+        with:
+          # zip file made at the packExtensionDir step
+          zipFilePath: 'build/extension.zip'
+          crxFilePath: 'build/extension.crx'
+          privateKey: ${{ secrets.CHROME_CRX_PRIVATE_KEY }}
+          # The following is optional if you need update.xml file
+          updateXmlPath: 'build/update.xml'
+          updateXmlCodebaseUrl: 'https://server.com/extension.crx'
+      
       - name: "Generate release tag"
         id: tag
-        run: echo "::set-output name=release_tag::FirefoxBuild_$(date +"%Y.%m.%d_%H-%M")"
+        run: echo "::set-output name=release_tag::${{ steps.generate_ver_number.outputs.ver_number }}"
 
       - name: "Create Release"
         uses: softprops/action-gh-release@v1
@@ -74,4 +96,4 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           tag_name: ${{ steps.tag.outputs.release_tag }}
-          files: ${{ steps.web-ext-sign.outputs.target }}
+          files: ${{ steps.web-ext-sign.outputs.target }}, ${{ steps.PackExtension.outputs.crxFilePath }}
