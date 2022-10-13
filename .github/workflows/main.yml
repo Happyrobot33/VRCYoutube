@@ -89,12 +89,17 @@ jobs:
         #rename the signed xpi file to "Firefox " with the version number at the end
       - name: "Rename Firefox xpi"
         run: |
-          mv ${{ steps.web-ext-sign.outputs.target }} "Firefox ${{ steps.get_version.outputs.version }}.xpi"
+          mv ${{ steps.web-ext-sign.outputs.target }} "Firefox ${{ steps.generate_ver_number.outputs.ver_number }}.xpi"
 
         #rename the signed crx file to "Chrome " with the version number at the end
       - name: "Rename Chrome crx"
         run: |
-          mv ${{ steps.PackExtension.outputs.crxFilePath }} "Chrome ${{ steps.get_version.outputs.version }}.crx"
+          mv ${{ steps.PackExtension.outputs.crxFilePath }} "Chrome ${{ steps.generate_ver_number.outputs.ver_number }}.crx"
+
+        #package both the signed xpi and crx files into a zip file so chrome doesnt complain, and rename the zip file to "Release " with the version number at the end
+      - name: "Zip Release"
+        run: |
+          zip -r "Release ${{ steps.generate_ver_number.outputs.ver_number }}.zip" "Firefox ${{ steps.generate_ver_number.outputs.ver_number }}.xpi" "Chrome ${{ steps.generate_ver_number.outputs.ver_number }}.crx"
 
         #create a release with the signed files
       - name: "Generate release tag"
@@ -110,3 +115,4 @@ jobs:
           files: |
             Chrome ${{ steps.generate_ver_number.outputs.ver_number }}.crx
             Firefox ${{ steps.generate_ver_number.outputs.ver_number }}.xpi
+            Release ${{ steps.generate_ver_number.outputs.ver_number }}.zip
