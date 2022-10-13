@@ -85,7 +85,18 @@ jobs:
           apiKey: ${{ secrets.AMO_SIGN_KEY }}
           apiSecret: ${{ secrets.AMO_SIGN_SECRET }}
           timeout: 900000
-      
+        
+        #rename the signed xpi file to "Firefox " with the version number at the end
+      - name: "Rename Firefox xpi"
+        run: |
+          mv ${{ steps.web-ext-sign.outputs.target }} "Firefox ${{ steps.get_version.outputs.version }}.xpi"
+
+        #rename the signed crx file to "Chrome " with the version number at the end
+      - name: "Rename Chrome crx"
+        run: |
+          mv ${{ steps.PackExtension.outputs.crxFilePath }} "Chrome ${{ steps.get_version.outputs.version }}.crx"
+
+        #create a release with the signed files
       - name: "Generate release tag"
         id: tag
         run: echo "::set-output name=release_tag::${{ steps.generate_ver_number.outputs.ver_number }}"
@@ -96,4 +107,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           tag_name: ${{ steps.tag.outputs.release_tag }}
-          files: ${{ steps.web-ext-sign.outputs.target }}, ${{ steps.PackExtension.outputs.crxFilePath }}
+          files: |
+            Chrome ${{ steps.get_version.outputs.version }}.crx
+            Firefox ${{ steps.get_version.outputs.version }}.xpi
