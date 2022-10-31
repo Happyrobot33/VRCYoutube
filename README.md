@@ -6,3 +6,6 @@ Go to [the latest release](https://github.com/Happyrobot33/VRCYoutube/releases/l
 
 ## Firefox:
 Go to [the latest release](https://github.com/Happyrobot33/VRCYoutube/releases/latest) and download the .xpi file. You should be able to double click it and it will allow you to install it
+
+## Updating:
+If you are updating, the best bet is to just completly remove the extension and add it back again
