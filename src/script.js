@@ -4,10 +4,28 @@ document.getElementById("convert").addEventListener("click", function () {
     chrome.tabs.query({ currentWindow: true, active: true }, function (tabs) {
         //get the resolver url from the dropdown
         selectedResolver = document.getElementById("resolver").value;
-        var finalURL = selectedResolver + tabs[0].url;
+        var formattedTabURL = tabs[0].url;
+        switch (document.getElementById("resolver").options[document.getElementById("resolver").selectedIndex].getAttribute("formatType")) {
+            case "full":
+                formattedTabURL = formattedTabURL;
+                break;
+            case "id":
+                formattedTabURL = extractVideoID(formattedTabURL);
+                break;
+        }
+        var finalURL = selectedResolver + formattedTabURL;
         copyTextToClipboard(finalURL);
     });
 });
+
+function extractVideoID(url) {
+    var video_id = url.split('v=')[1];
+    var ampersandPosition = video_id.indexOf('&');
+    if (ampersandPosition != -1) {
+        video_id = video_id.substring(0, ampersandPosition);
+    }
+    return video_id;
+}
 
 //listen for when the dropdown is changed, and save the selected index to sync storage
 document.getElementById("resolver").addEventListener("change", function () {
@@ -33,9 +51,11 @@ document.addEventListener('DOMContentLoaded', async function () {
     for (var i = 0; i < options.length; i++) {
         var resolverURL = options[i].value;
         var resolverName = options[i].text;
+        var resolverFormatType = options[i].getAttribute("formatType");
         var resolverElement = document.createElement("text");
         resolverElement.innerText = resolverName;
         resolverElement.url = resolverURL;
+        resolverElement.formatType = resolverFormatType;
         var element = document.getElementById("ResolverList").appendChild(resolverElement);
         //append a loading spinner to the end of the resolver element from spinner.html
         //var tempChild = document.createElement("div");
@@ -126,23 +146,17 @@ function copyTextToClipboard(text) {
 
 //ping a server and return if it is up or down
 function pingServer(url, resolverElement) {
-    var cors_proxy_url = "https://api.allorigins.win/raw?rand=" + Math.random() + "&url=";
+    var cors_proxy_url = "https://corsproxy.io/?";
     //random youtube video to make sure the resolvers are redirecting properly
     var random_youtube_url = "https://www.youtube.com/watch?v=jNQXAC9IVRw";
 
     console.log("pinging " + url);
     console.log("cors proxy url: " + cors_proxy_url + url + random_youtube_url);
 
-    fetch(cors_proxy_url + url + random_youtube_url, { 'mode': 'cors', 'cache': 'no-store' }).then(function (response) {
-        if (response.ok) {
-            //check if response contains json, it will error if it doesn't
-            response.json().then(function (data) {
-                //if the response contains json, then the resolver is down
-                ResolverDown();
-            }).catch(function (error) {
-                //if the response doesnt contain json, then the resolver is up
-                ResolverUp();
-            });
+    fetch(cors_proxy_url + url + random_youtube_url, { 'mode': 'cors', 'cache': 'no-store', "redirect": 'manual' }).then(function (response) {
+        //if opaque redirect, then the resolver is up
+        if (response.type == "opaqueredirect") {
+            ResolverUp();
         } else {
             //if the response is not ok, then the resolver is down
             ResolverDown();
