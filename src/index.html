@@ -7,20 +7,20 @@
   </head>
   <body>
     <h1>VRCYoutube</h1>
-    <a id="update" href="https://github.com/Happyrobot33/VRCYoutube" target="_blank">Update Available!</a>
     <p1>Convert any youtube page into a URL that can be watched by quest users! Just have the youtube page you want to convert focused, and click this button. The converted URL will be automatically copied to your clipboard</p1>
     <br>
     <br>
-    <p1>Resolvers (Green is reachable, Red is unreachable)</p1>
+    <p1>Resolvers (Green is reachable, Yellow is unknown, Red is unreachable)</p1>
     <div id="ResolverList">
     </div>
-    <label for="resolver">Current Resolver:</label>
+    <label for="resolver" id="resolverText">Selected Resolver:</label>
     <select name="resolver" id="resolver">
       <option value="https://questify.dev/?url=" formatType="full">Questify</option>
       <option value="https://resolver.mackandelius.xyz/?url=" formatType="full">Resolver.xyz</option>
-      <option value="https://q.thetechnolus.com/" formatType="full">Technolus</option>
+      <option value="https://questing.thetechnolus.com/" formatType="full">questing.thetechnolus</option>
       <option value="https://u2b.cx/id/" formatType="id">u2b.cx</option>
       <option value="https://shay.loan/" formatType="id">shay.loan</option>
+      <option value="https://yt2.quest/?url=" formatType="full">yt2.quest</option>
     </select>
     <button id="convert">Copy Compatible Link</button>
     <p1 id="notification">Success!</p1>

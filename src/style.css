@@ -48,14 +48,21 @@ h1 {
   background-color: black;
   display: flex;
   flex-direction: column;
+  font-size: large;
 }
 
-#update {
+#resolver {
   width: 100%;
-  font-size: large;
-  padding: 0px 0px;
-  color: green;
+  height: auto;
+  border-radius: 0px;
+  border-color: white;
+  color: white;
   background-color: black;
-  text-align: center;
-  display: none;
+  display: flex;
+  flex-direction: column;
+  font-size: xx-large;
+}
+
+#resolverText {
+  font-size: large;
 }
