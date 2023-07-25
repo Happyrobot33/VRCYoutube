@@ -31,6 +31,17 @@ jobs:
           extensionDir: 'src'
           zipFilePath: 'build/extension.zip'
         
+        #cache the build to use in subsequent jobs
+      - name: "Cache build"
+        uses: actions/cache@v2
+        with:
+          path: build/extension.zip
+          key: ${{ runner.os }}-build-${{ env.cache-name }}
+          restore-keys: |
+            ${{ runner.os }}-build-
+            ${{ runner.os }}-
+            ${{ runner.os }}
+        
         #create a release with the signed files
       - name: "Generate release tag"
         id: tag
@@ -50,6 +61,17 @@ jobs:
     runs-on: ubuntu-latest
     needs: build
     steps:
+        #get the build
+      - name: "Get build"
+        uses: actions/cache@v2
+        with:
+          path: build/extension.zip
+          key: ${{ runner.os }}-build-${{ env.cache-name }}
+          restore-keys: |
+            ${{ runner.os }}-build-
+            ${{ runner.os }}-
+            ${{ runner.os }}
+
         #FIREFOX BUILDING
       - name: "web-ext build"
         id: web-ext-build
@@ -74,6 +96,17 @@ jobs:
     runs-on: ubuntu-latest
     needs: build
     steps:
+        #get the build
+      - name: "Get build"
+        uses: actions/cache@v2
+        with:
+          path: build/extension.zip
+          key: ${{ runner.os }}-build-${{ env.cache-name }}
+          restore-keys: |
+            ${{ runner.os }}-build-
+            ${{ runner.os }}-
+            ${{ runner.os }}
+
       - name: Upload to Chrome Web Store
         uses: mnao305/chrome-extension-upload@v4.0.1
         with:
