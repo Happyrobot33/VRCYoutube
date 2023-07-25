@@ -42,6 +42,11 @@ document.addEventListener('DOMContentLoaded', async function () {
         }
     });
 
+    //display the current version number in #version
+    var browser = browser || chrome;
+    var manifestData = browser.runtime.getManifest();
+    document.getElementById("version").innerText = "v" + manifestData.version;
+
     //get all options from the dropdown
     var dropdown = document.getElementById("resolver");
     var options = dropdown.options;
