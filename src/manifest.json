@@ -15,5 +15,10 @@
   "action": {
     "default_popup": "index.html",
     "default_title": "VRCYoutube"
+  },
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "matthewherber@sbcglobal.net"
+    }
   }
 }
