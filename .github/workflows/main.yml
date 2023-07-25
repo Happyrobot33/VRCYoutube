@@ -61,16 +61,8 @@ jobs:
     runs-on: ubuntu-latest
     needs: build
     steps:
-        #get the build
-      - name: "Get build"
-        uses: actions/cache@v2
-        with:
-          path: build/extension.zip
-          key: ${{ runner.os }}-build-${{ env.cache-name }}
-          restore-keys: |
-            ${{ runner.os }}-build-
-            ${{ runner.os }}-
-            ${{ runner.os }}
+      - name: "Checkout"
+        uses: actions/checkout@v2
 
         #FIREFOX BUILDING
       - name: "web-ext build"
