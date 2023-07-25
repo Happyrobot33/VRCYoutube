@@ -48,6 +48,7 @@ jobs:
   firefox:
     name: "Firefox Extension Release"
     runs-on: ubuntu-latest
+    needs: build
     steps:
         #FIREFOX BUILDING
       - name: "web-ext build"
@@ -71,6 +72,7 @@ jobs:
   chrome:
     name: "Chrome Extension Release"
     runs-on: ubuntu-latest
+    needs: build
     steps:
       - name: Upload to Chrome Web Store
         uses: mnao305/chrome-extension-upload@v4.0.1
