@@ -31,17 +31,6 @@ jobs:
           extensionDir: 'src'
           zipFilePath: 'build/extension.zip'
         
-        #cache the build to use in subsequent jobs
-      - name: "Cache build"
-        uses: actions/cache@v2
-        with:
-          path: build/extension.zip
-          key: ${{ runner.os }}-build-${{ env.cache-name }}
-          restore-keys: |
-            ${{ runner.os }}-build-
-            ${{ runner.os }}-
-            ${{ runner.os }}
-        
         #create a release with the signed files
       - name: "Generate release tag"
         id: tag
@@ -88,16 +77,23 @@ jobs:
     runs-on: ubuntu-latest
     needs: build
     steps:
-        #get the build
-      - name: "Get build"
-        uses: actions/cache@v2
+      - name: "Checkout"
+        uses: actions/checkout@v2
+    
+      - name: "Get Version"
+        id: get_version
+        #read the version from src/manifest.json using fromJSON
+        #print the version to the console
+        run: |
+          echo ::set-output name=version::$(jq -r .version src/manifest.json)
+          echo "Version: $(jq -r .version src/manifest.json)"
+
+      - name: "ZIP Extension"
+        id: packExtensionDir
+        uses: cardinalby/webext-buildtools-pack-extension-dir-action@v1
         with:
-          path: build/extension.zip
-          key: ${{ runner.os }}-build-${{ env.cache-name }}
-          restore-keys: |
-            ${{ runner.os }}-build-
-            ${{ runner.os }}-
-            ${{ runner.os }}
+          extensionDir: 'src'
+          zipFilePath: 'build/extension.zip'
 
       - name: Upload to Chrome Web Store
         uses: mnao305/chrome-extension-upload@v4.0.1
